@@ -1,6 +1,11 @@
 package api
 
-import "time"
+import (
+	"context"
+	"net/http"
+
+	"golang.org/x/time/rate"
+)
 
 type RiotClient struct {
 	httpClient *http.Client

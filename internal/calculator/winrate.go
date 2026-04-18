@@ -10,6 +10,7 @@ type ChampionWinRate struct {
 }
 
 // CalculateIron4Meta рассчитывает итоговую таблицу винрейтов по накопленным данным в БД.
+/*
 func CalculateIron4Meta(repo *storage.Repository) ([]ChampionWinRate, error) {
 	// SQL запрос: SELECT champion_id, COUNT(*), SUM(win) FROM matches WHERE tier='IRON' AND rank='IV' GROUP BY champion_id
 	rows := repo.QueryIron4Stats()
@@ -22,3 +23,4 @@ func CalculateIron4Meta(repo *storage.Repository) ([]ChampionWinRate, error) {
 	}
 	return stats, nil
 }
+*/

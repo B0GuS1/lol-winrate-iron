@@ -1,9 +1,6 @@
 package collector
 
-import (
-	"context"
-)
-
+/*
 // ProcessSummonerMatches получает историю матчей одного игрока, сохраняет только те, что сыграны в Iron IV.
 func ProcessSummonerMatches(ctx context.Context, puuid string, client *api.RiotClient, repo *storage.Repository) error {
 	// 1. Получить список ID матчей (queue=420) [citation:6].
@@ -22,3 +19,4 @@ func ProcessSummonerMatches(ctx context.Context, puuid string, client *api.RiotC
 	}
 	return nil
 }
+*/

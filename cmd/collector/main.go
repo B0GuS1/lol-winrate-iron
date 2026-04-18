@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/B0GuS1/lol-winrate-iron/internal/api"
@@ -14,4 +15,9 @@ func main() {
 	// Создаем клиент
 	client := api.NewRiotClient(apiKey)
 	fmt.Println(client)
+
+	ctx := context.Background()
+
+	client.GetAllIron4Players(ctx)
+
 }

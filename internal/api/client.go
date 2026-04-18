@@ -1,6 +1,9 @@
 package api
 
 import (
+	"context"
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"golang.org/x/time/rate"
@@ -35,12 +38,36 @@ func NewRiotClient(apiKey string) *RiotClient {
 	}
 }
 
-// GetMatchIDsByQueue получает ID матчей конкретного игрока по PUUID с фильтрацией по типу очереди (Ranked Solo/Duo).
-// Используется endpoint /lol/match/v5/matches/by-puuid/{puuid}/ids
-//func (c *RiotClient) GetMatchIDsByQueue(ctx context.Context, puuid string, queueID int, count int) ([]string, error)
+func (c *RiotClient) GetIron4Players(ctx context.Context, page int) ([]LeagueEntryDTO, error) {
+	url := fmt.Sprintf("%s/lol/league/v4/entries/RANKED_SOLO_5x5/IRON/IV?page=%d&api_key=%s",
+		c.regionalURL, page, c.apiKey)
+	req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
+	c.limiter.Wait(ctx)
+	resp, _ := c.httpClient.Do(req)
+	var entries []LeagueEntryDTO
+	json.NewDecoder(resp.Body).Decode(&entries)
+	return entries, nil
+}
 
-// GetMatchData получает полные данные одного матча по его ID.
-//func (c *RiotClient) GetMatchData(ctx context.Context, matchID string) (*MatchDTO, error)
+func (c *RiotClient) GetAllIron4Players(ctx context.Context) ([]LeagueEntryDTO, error) {
+	var allEntries []LeagueEntryDTO
 
-// GetSummonerByRiotID получает PUUID игрока по его Riot ID (никнейм#таг).
-//func (c *RiotClient) GetSummonerByRiotID(ctx context.Context, gameName, tagLine string) (*SummonerDTO, error)
+	for page := 1; ; page++ {
+		entries, err := c.GetIron4Players(ctx, page)
+		if err != nil {
+			return nil, fmt.Errorf("error fetching page %d: %w", page, err)
+		}
+
+		// Если страница пустая - достигли конца
+		if len(entries) == 0 {
+			break
+		}
+
+		allEntries = append(allEntries, entries...)
+
+		// Опционально: логирование прогресса
+		fmt.Printf("Fetched page %d, got %d entries", page, len(entries))
+	}
+
+	return allEntries, nil
+}
